@@ -1,0 +1,19 @@
+todo:
+=====
+
+
+* find and delete unnecessary source files, i.e. source files that are no longer used.
+* test it extensively
+* in tuition record dialog, fix and adapt  signals and slots, add more functionality --> done
+
+* make it impossible to add twice the same tuition record to an invoice.
+* make it easier to produce and invoice for an imcomplete invoice record   --> done
+    (not enough lessons)
+
+* expand database for selling exercise, expand tuition record dialog  --> done
+
+* maybe send invoices different, maybe use python email module.  --> done!
+
+* check if schedule is still working, i.e. are the schedule entries really used?
+
+* change email used ?
