@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>567</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>621</width>
+    <height>498</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>700</width>
+    <height>800</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>add student</string>
+  </property>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>701</width>
+     <height>561</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>665</width>
+         <height>675</height>
+        </rect>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>651</width>
+          <height>652</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <item>
+          <layout class="QFormLayout" name="formLayout">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::ExpandingFieldsGrow</enum>
+           </property>
+           <property name="rowWrapPolicy">
+            <enum>QFormLayout::DontWrapRows</enum>
+           </property>
+           <property name="labelAlignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="formAlignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_11">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>student id</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_11</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLCDNumber" name="lcdNumber">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="lineWidth">
+              <number>2</number>
+             </property>
+             <property name="midLineWidth">
+              <number>1</number>
+             </property>
+             <property name="digitCount">
+              <number>3</number>
+             </property>
+             <property name="segmentStyle">
+              <enum>QLCDNumber::Outline</enum>
+             </property>
+             <property name="intValue" stdset="0">
+              <number>4</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_12">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>unique tuition
+id prefix</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_11</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineEdit_11">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_13">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>first name</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_12</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_14">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>last name</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_13</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_15">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>parent name</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_14</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="label_17">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>start date</string>
+             </property>
+             <property name="buddy">
+              <cstring>dateEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QLabel" name="label_18">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>end date</string>
+             </property>
+             <property name="buddy">
+              <cstring>dateEdit_2</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0">
+            <widget class="QLabel" name="label_19">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>address</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_16</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0">
+            <widget class="QLabel" name="label_1A">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>post code</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_17</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0">
+            <widget class="QLabel" name="label_1B">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>phone student</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_18</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0">
+            <widget class="QLabel" name="label_1C">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>email student</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_19</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0">
+            <widget class="QLabel" name="label_1D">
+             <property name="text">
+              <string>phone parent</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_1A</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="0">
+            <widget class="QLabel" name="label_1E">
+             <property name="text">
+              <string>email parent</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_1B</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="0">
+            <widget class="QLabel" name="label_1F">
+             <property name="text">
+              <string>travel distance</string>
+             </property>
+             <property name="buddy">
+              <cstring>doubleSpinBox_11</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QDateEdit" name="dateEdit">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="1">
+            <widget class="QDateEdit" name="dateEdit_2">
+             <property name="minimumDate">
+              <date>
+               <year>1752</year>
+               <month>9</month>
+               <day>16</day>
+              </date>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lineEdit_12"/>
+           </item>
+           <item row="10" column="1">
+            <widget class="QLineEdit" name="lineEdit_16"/>
+           </item>
+           <item row="11" column="1">
+            <widget class="QLineEdit" name="lineEdit_17"/>
+           </item>
+           <item row="12" column="1">
+            <widget class="QLineEdit" name="lineEdit_18"/>
+           </item>
+           <item row="13" column="1">
+            <widget class="QLineEdit" name="lineEdit_19"/>
+           </item>
+           <item row="14" column="1">
+            <widget class="QLineEdit" name="lineEdit_1A"/>
+           </item>
+           <item row="15" column="1">
+            <widget class="QLineEdit" name="lineEdit_1B"/>
+           </item>
+           <item row="16" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_11">
+             <property name="suffix">
+              <string> miles</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="lineEdit_14"/>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="lineEdit_13"/>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLineEdit" name="lineEdit_15"/>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>extra info</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>13</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="formLayout_3">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::ExpandingFieldsGrow</enum>
+           </property>
+           <property name="horizontalSpacing">
+            <number>6</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>6</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_21">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>fees per hour</string>
+             </property>
+             <property name="buddy">
+              <cstring>doubleSpinBox_21</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_21">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="prefix">
+              <string>£ </string>
+             </property>
+             <property name="minimum">
+              <double>20.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>30.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_22">
+             <property name="text">
+              <string>discount</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_22">
+             <property name="prefix">
+              <string>£ </string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_24">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>extra cost 1 amount</string>
+             </property>
+             <property name="buddy">
+              <cstring>comboBox_21</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_25">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>extra cost 2 type</string>
+             </property>
+             <property name="buddy">
+              <cstring>comboBox_22</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="comboBox_22">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="label_27">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>usual day</string>
+             </property>
+             <property name="buddy">
+              <cstring>comboBox_23</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QComboBox" name="comboBox_23">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="label_28">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>usual start time</string>
+             </property>
+             <property name="buddy">
+              <cstring>timeEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QTimeEdit" name="timeEdit">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="wrapping">
+              <bool>false</bool>
+             </property>
+             <property name="specialValueText">
+              <string/>
+             </property>
+             <property name="time">
+              <time>
+               <hour>14</hour>
+               <minute>0</minute>
+               <second>0</second>
+              </time>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QLabel" name="label_29">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>usual duration</string>
+             </property>
+             <property name="buddy">
+              <cstring>spinBox_25</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1">
+            <widget class="QSpinBox" name="spinBox_25">
+             <property name="maximum">
+              <number>240</number>
+             </property>
+             <property name="singleStep">
+              <number>30</number>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QLabel" name="label_2A">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>usual travel
+method</string>
+             </property>
+             <property name="buddy">
+              <cstring>comboBox_24</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="1">
+            <widget class="QComboBox" name="comboBox_24"/>
+           </item>
+           <item row="10" column="0">
+            <widget class="QLabel" name="label_2B">
+             <property name="text">
+              <string>payment method</string>
+             </property>
+             <property name="buddy">
+              <cstring>comboBox_25</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="1">
+            <widget class="QComboBox" name="comboBox_25">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0">
+            <widget class="QLabel" name="label_2C">
+             <property name="text">
+              <string>invoice email</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_21</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1">
+            <widget class="QLineEdit" name="lineEdit_21"/>
+           </item>
+           <item row="12" column="0">
+            <widget class="QLabel" name="label_2D">
+             <property name="text">
+              <string>sessions per
+invoice</string>
+             </property>
+             <property name="buddy">
+              <cstring>spinBox_26</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="1">
+            <widget class="QSpinBox" name="spinBox_26"/>
+           </item>
+           <item row="13" column="0">
+            <widget class="QLabel" name="label_2E">
+             <property name="text">
+              <string>invoice to</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEdit_22</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="1">
+            <widget class="QLineEdit" name="lineEdit_22"/>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="comboBox_21">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_23">
+             <property name="text">
+              <string>extra cost 1 type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_23">
+             <property name="prefix">
+              <string>£ </string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_24">
+             <property name="prefix">
+              <string>£ </string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_26">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>extra cost 2 amount</string>
+             </property>
+             <property name="buddy">
+              <cstring>comboBox_21</cstring>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>350</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pButton_Add">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Add</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pButton_Cancel">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Cancel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>lineEdit_11</tabstop>
+  <tabstop>lineEdit_12</tabstop>
+  <tabstop>lineEdit_13</tabstop>
+  <tabstop>lineEdit_14</tabstop>
+  <tabstop>lineEdit_15</tabstop>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>dateEdit_2</tabstop>
+  <tabstop>lineEdit_16</tabstop>
+  <tabstop>lineEdit_17</tabstop>
+  <tabstop>lineEdit_18</tabstop>
+  <tabstop>lineEdit_19</tabstop>
+  <tabstop>lineEdit_1A</tabstop>
+  <tabstop>lineEdit_1B</tabstop>
+  <tabstop>doubleSpinBox_11</tabstop>
+  <tabstop>doubleSpinBox_21</tabstop>
+  <tabstop>doubleSpinBox_22</tabstop>
+  <tabstop>comboBox_21</tabstop>
+  <tabstop>doubleSpinBox_23</tabstop>
+  <tabstop>comboBox_22</tabstop>
+  <tabstop>doubleSpinBox_24</tabstop>
+  <tabstop>comboBox_23</tabstop>
+  <tabstop>timeEdit</tabstop>
+  <tabstop>spinBox_25</tabstop>
+  <tabstop>comboBox_24</tabstop>
+  <tabstop>comboBox_25</tabstop>
+  <tabstop>lineEdit_21</tabstop>
+  <tabstop>spinBox_26</tabstop>
+  <tabstop>lineEdit_22</tabstop>
+  <tabstop>pButton_Add</tabstop>
+  <tabstop>pButton_Cancel</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pButton_Cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>638</x>
+     <y>578</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>601</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

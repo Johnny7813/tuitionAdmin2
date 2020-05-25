@@ -1,0 +1,34 @@
+<RCC>
+  <qresource prefix="general">
+    <file>icons/filter.png</file>
+    <file>icons/road2b.png</file>
+    <file>icons/road2c.png</file>
+    <file>icons/edit-table-insert-row-below.png</file>
+    <file>icons/gnumeric.png</file>
+    <file>icons/insert-table2.png</file>
+    <file>icons/road2a.png</file>
+    <file>icons/road18.png</file>
+    <file>icons/traffic.png</file>
+    <file>icons/invoice.png</file>
+    <file>icons/invoice1.png</file>
+    <file>icons/insert-table.png</file>
+    <file>icons/road1.png</file>
+    <file>icons/road.png</file>
+    <file>icons/application-exit.png</file>
+    <file>icons/dialog-close.png</file>
+    <file>icons/document-close.png</file>
+    <file>icons/document-save-all.png</file>
+    <file>icons/document-save.png</file>
+    <file>icons/edit-copy.png</file>
+    <file>icons/edit-cut.png</file>
+    <file>icons/edit-paste.png</file>
+    <file>icons/edit-redo.png</file>
+    <file>icons/edit-table-delete-row.png</file>
+    <file>icons/edit-undo.png</file>
+    <file>icons/list-add-user.png</file>
+    <file>icons/list-resource-add.png</file>
+    <file>icons/view-refresh.png</file>
+    <file>icons/xmag.png</file>
+    <file>icons/add-calendar.png</file>
+  </qresource>
+</RCC>
