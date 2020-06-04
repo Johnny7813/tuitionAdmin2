@@ -5,7 +5,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import pink, black, red, blue, green
-from PyQt5    import QtCore
+from PyQt5.QtCore import QDate
 
 
 class ReceiptDocument:
@@ -13,7 +13,7 @@ class ReceiptDocument:
     All units are in mm
     pdffilePath is the output pdf file
     receiptData  = [ Options, lesson_dates,tuition_id_prefix, lesson_num, number_of_lessons,
-        student_name, tuition_address, duration_of_lesson, tuition_fee, payment_amount ]
+        student_name, tuition_address, post code, duration_of_lesson, tuition_fee ]
     """
 
     def __init__(self, pdffilePath, receiptData):
@@ -31,7 +31,7 @@ class ReceiptDocument:
         self.textSize = 16  # in pixels
         self.headingSize = 22  # in pixels
         self.iSpace = 20  # in pixels
-        self.rightColumn = self.pageWidth / 2.0 + 5
+        self.rightColumn = self.pageWidth / 2.0
 
         self.fontPathBase = "./fonts/%s.ttf"
         #print("Font: ", self.fontPathBase % "DejaVuSerif")
@@ -46,12 +46,17 @@ class ReceiptDocument:
         self.lesson_num = receiptData[3]
         self.n_lessons = receiptData[4]
         self.student_name = receiptData[5]
-        self.tuition_address = receiptData[6].split("@")
-        self.lesson_duration = receiptData[7]
-        self.tuition_fee = receiptData[8]
-        self.payment_amount = receiptData[9]
-        self.receiptData = receiptData
-        self.year = QtCore.QDate.currentDate().toString("yyyy")
+        # format address data, put postcode to address
+        pre_address = receiptData[6]
+        if pre_address.endswith("?"):
+            pre_address = pre_address[:-1] + ","
+            self.tuition_address = [pre_address, receiptData[7]]
+        else:
+            address = pre_address + ", " + receiptData[7]
+            self.tuition_address = address.split("?")
+        self.lesson_duration = receiptData[8]
+        self.tuition_fee = receiptData[9]
+        self.year = QDate.currentDate().toString("yyyy")
 
     # make a tuition_id out of a prefix (string)
     # and a number
@@ -62,7 +67,7 @@ class ReceiptDocument:
     # make a date string
     def make_date(self, ind):
         if ind < len(self.tuition_dates):
-            return self.tuition_dates[ind]
+            return self.tuition_dates[ind].toString("dd/MM/yyyy")
         else:
             word1 = "___ / ___ / "
             word2 = self.year if self.options["year"] else "______"
@@ -79,7 +84,7 @@ class ReceiptDocument:
     # return the payemnt amount, which is the tuition fee
     def make_payment(self):
         if self.options["payment"]:
-            word = "£ {:4.2f}".format(float(self.payment_amount))
+            word = "£ {:4.2f}".format(float(self.tuition_fee))
         else:
             word = "£ _____"
         return word
@@ -134,7 +139,7 @@ class ReceiptDocument:
             self.canvas.drawString(xl, yy, "payment amount received:")
             self.canvas.drawString(xr, yy, "£ ______")
         yy -= self.iSpace
-        self.canvas.drawString(xl, yy, "signature of student/parent:")
+        self.canvas.drawString(xl, yy, "signature of client:")
         self.canvas.drawString(xr, yy, "__"*12)
         yy -= self.iSpace
         self.canvas.drawString(xl, yy, "signature of tutor:")
@@ -152,12 +157,12 @@ class ReceiptDocument:
 
 
 if __name__ == "__main__":
+    # a simple test example
     Options = {"year": True, "minutes": False, "payment": True, "transfer": True}
-    receiptData3 = ["ASuresh_", 31, "Avinash Suresh", "3 April Close, Horsham,@ RH12 2LL"]
-
-    receiptData = [Options, ["06/05/2018", "13/05/2018"], "ASuresh_", 34, 4,
-                    "Avinash Suresh", "3 April Close, Horsham,@RH12 2LL", 90,
-                    40, 40]
+    date1 = QDate(2018, 5, 6)
+    date2 = QDate(2018, 5, 13)
+    receiptData = [Options, [date1, date2], "ASuresh_", 34, 4,"Avinash Suresh",
+                   "3 April Close, Horsham?","RH12 2LL", 90, 40]
 
     rec = ReceiptDocument("reportlab_receipt01.pdf", receiptData)
     rec.compileReceipt()
