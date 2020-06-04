@@ -63,50 +63,50 @@ class create_receipts_Dialog(QtWidgets.QDialog, ui_create_receipts.Ui_Dialog):
         
         self.set_receipt_count(0)
 
-    
-    
+
     # from weekly_schedule record calculate the correct payment amount
-    def _get_payment_amount(self, rec):
+    # sidx is the index of the record in the schedule table (row index)
+    def _get_payment_amount(self, sidx):
+        schedule = self.model.schedule
         setcontext(Context(prec=60, rounding=ROUND_HALF_DOWN))
-        fees_ph       =  Decimal(rec.value("fees_ph"))
-        self.duration = Decimal(rec.value("duration"))
-        extra_cost1   = rec.value("extra_cost1_amount")
-        extra_cost2   = rec.value("extra_cost2_amount")
-        discount      = rec.value("discount")
-        amount        = fees_ph*self.duration/Decimal(60)-Decimal(discount)
-        amount       += Decimal(extra_cost1) + Decimal(extra_cost2)
-        
-        remainder    = amount % Decimal(1)
-        if remainder == 0 :
+        fees_ph = Decimal(schedule.data3(sidx, "fees_ph"))
+        self.duration = Decimal(schedule.data3(sidx, "duration"))
+        extra_cost1 = schedule.data3(sidx, "extra_cost1_amount")
+        extra_cost2 = schedule.data3(sidx, "extra_cost2_amount")
+        discount = schedule.data3(sidx, "discount")
+        amount = fees_ph * self.duration / Decimal(60) - Decimal(discount)
+        amount += Decimal(extra_cost1) + Decimal(extra_cost2)
+
+        remainder = amount % Decimal(1)
+        if remainder == 0:
             amount_str = "{0:.0f}".format(amount)
-        else :
+        else:
             amount_str = "{0:.2f}".format(amount)
-        
+
         return amount_str
-    
-    
-    
+
+
     # from student_info record calculate the correct payment amount
-    def _get_payment_amount2(self, rec):
+    # idx is the row index in the student_info table
+    def _get_payment_amount2(self, idx):
+        student = self.model.student
         setcontext(Context(prec=60, rounding=ROUND_HALF_DOWN))
-        fees_ph       =  Decimal(rec.value("fees_ph"))
-        self.duration = Decimal(rec.value("usual_duration"))
-        extra_cost1   = rec.value("extra_cost1_amount")
-        extra_cost2   = rec.value("extra_cost2_amount")
-        discount      = rec.value("discount")
-        
-        amount        = fees_ph*self.duration/Decimal(60)+Decimal(extra_cost1)
-        amount       += Decimal(extra_cost2)-Decimal(discount)
-        
-        remainder    = amount % Decimal(1)
-        if remainder == 0 :
+        fees_ph = Decimal(student.data3(idx, "fees_ph"))
+        self.duration = Decimal( student.data3(idx, "usual_duration"))
+        extra_cost1 = student.data3(idx, "extra_cost1_amount")
+        extra_cost2 = student.data3(idx, "extra_cost2_amount")
+        discount =  student.data3(idx, "discount")
+
+        amount = fees_ph * self.duration / Decimal(60) + Decimal(extra_cost1)
+        amount += Decimal(extra_cost2) - Decimal(discount)
+
+        remainder = amount % Decimal(1)
+        if remainder == 0:
             amount_str = "{0:.0f}".format(amount)
-        else :
+        else:
             amount_str = "{0:.2f}".format(amount)
-        
+
         return amount_str
-    
-        
         
         
     # assemble date from the dialog in variables
@@ -115,37 +115,37 @@ class create_receipts_Dialog(QtWidgets.QDialog, ui_create_receipts.Ui_Dialog):
         self.options['transfer'] = self.checkBox_2.isChecked()
         self.options['year']     = self.checkBox_3.isChecked()
         self.options['minutes']  = self.checkBox_4.isChecked()
-        
-        i                      = self.comboBox_2.currentIndex()
-        self.receipt_count     = int(self.receipt_list[i])
+        student = self.model.student  # abbreviation
+        i = self.comboBox_2.currentIndex()
+        self.receipt_count = int(self.receipt_list[i])
         
         ## read data from student_info
-        std_index             = self.model.findStudentKey(self.student_id)
-        if  std_index < 0:  # index not found
-            return False
-        std_rec               = self.model.student.record(std_index)
+        std_index = self.model.findStudentKey(self.student_id)
+        assert (std_index >= 0), "Student index could not be found!"
         
         ## read data from weekly_schedule
-        sch_index             = self.model.findScheduleKey2(self.student_id)
+        sch_index = self.model.findScheduleKey2(self.student_id)
+        #print("schedule index: ", sch_index)
+        #print("student index: ", std_index)
         if sch_index < 0 :  # index not found
-            self.amount           = self._get_payment_amount2(std_rec)
-            pre_address           = std_rec.value("address")
-        else:    
-            sch_rec               = self.model.schedule.record(sch_index)
+            self.amount           = self._get_payment_amount2(std_index)
+            pre_address           = student.data3(std_index, "address")
+        else:
             ## test for a different schedule entry for this student
-            j                     = self.model.findScheduleKey2(self.student_id, sch_index+1)
-            if j >= 0:  # more than one schedule entry for this student -> we don't print the amount
+            sch_index2 = self.model.findScheduleKey2(self.student_id, sch_index+1)
+            if sch_index2 >= 0:
+                # more than one schedule entry for this student -> we don't print the amount
                 self.options['pay'] = False
-            self.amount           = self._get_payment_amount(sch_rec)
-            pre_address           = sch_rec.value("address")
+            self.amount           = self._get_payment_amount(sch_index)
+            pre_address           = self.model.schedule.data3(sch_index, "address")
         
         
-        self.last_name        = std_rec.value("last_name")
-        pre_name              = std_rec.value("first_name")+" "+self.last_name
+        self.last_name        = student.data3(std_index, "last_name")
+        pre_name              = student.data3(std_index, "first_name") + " " + self.last_name
         pre_name              = re.sub("&", "and", pre_name)
         
-        pre_prefix            = std_rec.value("tuition_id_prefix")
-        self.postcode         = std_rec.value("postcode")
+        pre_prefix            = student.data3(std_index, "tuition_id_prefix")
+        self.postcode         = student.data3(std_index, "postcode")
         self.prefix           = re.sub("\_", "\\_", pre_prefix)
         self.name             = re.sub("\_", "\\_", pre_name)
         self.address          = re.sub("(.{20,30}),","\\1,\\\\\\\\ & ", pre_address) 
@@ -154,9 +154,9 @@ class create_receipts_Dialog(QtWidgets.QDialog, ui_create_receipts.Ui_Dialog):
         cindex                = self.model.findStdcountKey(self.student_id)
         counter_rec           = self.model.stdcount.record(cindex)
         self.base_num         = counter_rec.value("receipt_counter")
+        self.base_num = self.model.stdcount.data3(cindex, "receipt_counter")
         return True
-    
-    
+
     
     # update the value of the receipt_counter in student_counters
     def _update_receipt_counter(self):
@@ -280,10 +280,7 @@ class create_receipts_Dialog(QtWidgets.QDialog, ui_create_receipts.Ui_Dialog):
   
         rstring += fixed[4]
         return rstring
-    
-    
-    
-    
+
     
     def create_receipts(self):
         res = self._assemble_data()
