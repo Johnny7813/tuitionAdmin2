@@ -401,14 +401,16 @@ class HModel(object):
     
     
     ## find keyword in primary key for table weekly_schedule
+    ## the schedule table should have less than 20 entries
+    ## we don't need a sophisticated search method
     def findScheduleKey2(self, student_id, start=0):
         schmod = self.schedule
         col    = schmod.fieldIndex("last_name")
         size   = schmod.rowCount()
         
         for i in range(start,size):
-            id2 = schmod.data2(i,col)
-            if student_id==id2 :
+            id2 = schmod.data2(i,col, False)
+            if student_id == id2 :
                 return i
         
         return -1

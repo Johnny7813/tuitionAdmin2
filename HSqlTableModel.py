@@ -237,11 +237,11 @@ class HSqlTableModel(QtSql.QSqlTableModel):
     def data3(self, row, colStr, translate=True):
         col = self.fieldIndex(colStr)
         assert col >= 0, print("Error in HSqlTableModel.data2")
-            
+
         modind = self.index(row,col)
         value  = super().data(modind, QtCore.Qt.DisplayRole)
         if self.debug:
-                print("Data3: col=",col," var=",var," role=Display")
+                print("Data3: row=",row," column index=",colStr," role=Display")
         
         if (not col in self.rLib) or (not translate): return value
         

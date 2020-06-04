@@ -1,22 +1,35 @@
 
-This is a new version of tuition_admin
-it is based on the latest tuition_admin version that was deployed in Qt4
-and connected to private_tuition_v2
+the program
+===========
 
-It has been completely morphed to Qt5 with PyQt5
-It uses a new database with foreign table support
-and extra costs instead of travel cost, website cost etc.
+This is tuitionAdmin2 a tuition administration program.
+It is written in python3 and uses PyQt5 and mySQL.
+The mySQL connection is made through Qt5.
+I use it for my small tuition business. It is perfectly
+tailored to my needs and reduces the time I spend on
+administration a really great deal.
 
-*** 29/08/2019 idea
-+ reimplemet QSqlRecord, data is filled with model.data ---> done
-    --not necessary. I have reimplemented the functions that take
-    or produce records like  deleteRows
-+ reimplement the seek functions without record ---> done
+The original version "tuitionAdmin1" was based on Qt4.
+This program has been slowly developed over 5 years.
+Many changes have been made over time, whenever I encountered
+something that I thought I could improve. Or I encountered
+and error.
 
-+ update check_invoice()
-+ implement check tuition, so that not 2 tuition_id's can be added and no two
-    entries for one day
+In mySQL I don't use enumerates anymore. I have switched to
+uing foreign tables. The reason is, foreign tables are 
+more portable. And I want to switch from mySQL to SQlite.
 
-+ fix time recording so that it can easily switched on or off
-+ fix invoice table, triggers  --> done
-+ fix saving. When I save, it still asks me to save on quit. --> done
+development goals
+=================
+
+* I want to switch from the mySQL backend to SQlite. Since SQlite 
+does not support enumerates, I have changed enumerates to foreign
+tables in mySQL.
+
+* currently pdf files like invoices and receipts are created using
+LaTeX. But I want to reduce the dependence of my program on other
+programs. Therefore I want to try producing pdf files using the python
+library reportlab.
+
+
+

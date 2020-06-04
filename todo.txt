@@ -6,6 +6,21 @@ todo:
 * test it extensively
 * in tuition record dialog, fix and adapt  signals and slots, add more functionality --> done
 
+*** 29/08/2019 idea
++ reimplemet QSqlRecord, data is filled with model.data ---> done
+    --not necessary. I have reimplemented the functions that take
+    or produce records like  deleteRows
++ reimplement the seek functions without record ---> done
+
++ update check_invoice()
++ implement check tuition, so that not 2 tuition_id's can be added and no two
+    entries for one day
+
++ fix time recording so that it can easily switched on or off
++ fix invoice table, triggers  --> done
++ fix saving. When I save, it still asks me to save on quit. --> done
+
+
 * make it impossible to add twice the same tuition record to an invoice.
 * make it easier to produce and invoice for an imcomplete invoice record   --> done
     (not enough lessons)

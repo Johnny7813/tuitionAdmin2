@@ -23,6 +23,7 @@ from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
+from reportlab_invoice import *
 
 
 email_password = ""
@@ -135,14 +136,11 @@ class invoice_factory(object):
         
     
     ## assemble all relevant data to produce an invoice
-    def _make_invoice_data(self, tuition_ids):
+    def _make_invoice_data2(self, tuition_ids):
         model = self.model.tuition
         end   = len(tuition_ids)
         tind  = []
-        
-        #for i in range(0,end):
-        #    key = tuition_ids[i]
-        #    tind.append(self.model.findTuitionKey(key))
+
             
         for key in tuition_ids:
             print(key)
@@ -194,8 +192,72 @@ class invoice_factory(object):
         #print("idata: ", idata)
         
         return (idata, tdata)
-        
-    
+
+
+    ## assemble all relevant data to produce an invoice
+    def _make_invoice_data(self, tuition_ids):
+        # number of lessons
+        print("Make Invoice Data")
+        nLessons = len(tuition_ids)
+        tind = []
+
+        for key in tuition_ids:
+            print(key)
+            tind.append(self.model.findTuitionKey(key))
+
+        grand_total = 0.0
+        tutmod = self.model.tuition
+
+        name = self.model.student.data3(self.student_idx, "first_name") + " " + \
+                    self.model.student.data3(self.student_idx, "last_name")
+        name = re.sub("&", "and", name)
+
+        invoiceData = []
+        # invoiceHeader = [invoice_date, invoice_to, invoice_for, invoice_ref, number of lessons, total]
+        invoiceHeader = []
+        invoiceHeader.append(QtCore.QDate.currentDate().toString("dd/MM/yyyy"))
+        invoiceHeader.append(self.model.student.data3(self.student_idx, "invoice_to"))
+        invoiceHeader.append(name)
+        invoiceHeader.append(self.invoice_id)
+        invoiceHeader.append(nLessons)
+        invoiceHeader.append(0.0)
+        invoiceData.append(invoiceHeader)
+
+        # lesson = [date, tuition_ref, hours, rate, amount, reason1, money1, ...,
+        #       discount, discount_money]
+        for j in tind:
+            lesson_total = tutmod.data3(j, "total_cost")
+            lesson_duration = tutmod.data3(j, "duration") / 60.0
+            fees_ph = tutmod.data3(j, "fees_ph")
+            lesson_amount = lesson_duration*fees_ph
+            lesson_discount = tutmod.data3(j, "discount")
+            extra_cost_amount = [tutmod.data3(j, "extra_cost1_amount"),
+                        tutmod.data3(j, "extra_cost2_amount"), tutmod.data3(j, "extra_cost3_amount")]
+            extra_cost_type = [tutmod.data3(j, "extra_cost1_type"), tutmod.data3(j, "extra_cost2_type"),
+                               tutmod.data3(j, "extra_cost3_type")]
+            #print(extra_cost_amount)
+            #print(extra_cost_type)
+            lesson = []
+            lesson.append(tutmod.data3(j, "tuition_date").toString("dd/MM/yyyy"))
+            lesson.append(tutmod.data3(j, "tuition_id"))
+            lesson.append(lesson_duration)
+            lesson.append(fees_ph)
+            lesson.append(lesson_amount)
+            for amount, type in zip(extra_cost_amount, extra_cost_type):
+                if amount > 0.0:
+                    lesson.append(type)
+                    lesson.append(amount)
+            if lesson_discount > 0.0:
+                lesson.append("discount")
+                lesson.append(-lesson_discount)
+
+            invoiceData.append(lesson)
+            grand_total += lesson_total
+
+        invoiceData[0][-1] = grand_total
+
+        return invoiceData
+
     
     
     ## produce a string with the Latex code for an invoice
@@ -294,9 +356,7 @@ class invoice_factory(object):
         #print("#########################\nrstring:\n", rstring)
         
         return rstring
-            
-  
-        
+
     
     # This function is called by the "Create Receipt" buttons
     # It uses the preset data in studentData and Fixme 
@@ -305,31 +365,51 @@ class invoice_factory(object):
     ## arg 3: optional start okular
     def create_invoice(self, tuition_ids, output_dir, start_okular=True):
         #print(tuition_ids)
+        fname = output_dir + "/tuition-invoice-{0}.pdf".format(self.invoice_id)
+        invoiceData = self._make_invoice_data(tuition_ids)
+        #print("invoice_data:", invoiceData)
+        invDoc = InvoiceDocument(fname, invoiceData)
+        invDoc.compileInvoice()
+
+        if start_okular:
+            okular = subprocess.Popen(["/usr/bin/okular", fname])
+        
+        return fname
+
+
+    # This function is called by the "Create Receipt" buttons
+    # It uses the preset data in studentData and Fixme
+    ## arg 1: tuition_ids
+    ## arg 2: output dir
+    ## arg 3: optional start okular
+    def create_invoice2(self, tuition_ids, output_dir, start_okular=True):
+        # print(tuition_ids)
         invoice_data = self._make_invoice_data(tuition_ids)
         print("invoice_data:", invoice_data)
-        invoice_tex  = self._create_invoice_string(invoice_data)
-    
-        fname        = output_dir + "/tuition-invoice-{0}.tex".format(invoice_data[0][2])
-        fname2       = re.sub("tex","pdf",fname)
-        
-        
-        fhandle      = open(fname, 'w')
+        invoice_tex = self._create_invoice_string(invoice_data)
+
+        fname = output_dir + "/tuition-invoice-{0}.tex".format(invoice_data[0][2])
+        fname2 = re.sub("tex", "pdf", fname)
+
+        fhandle = open(fname, 'w')
         fhandle.write(invoice_tex)
         fhandle.close()
-        
+
         os.chdir(output_dir)
-        
-        exitcode = subprocess.check_call("/usr/bin/pdflatex '{0}'".format(fname), shell=True, stdout=subprocess.DEVNULL)
-        #print("create_invoice, pdflatex exitcode:", exitcode )
-        
-        assert  exitcode == 0, "pdflatex failed!"
-        if exitcode==0 and start_okular:
-            okular   = subprocess.Popen(["/usr/bin/okular", fname2])
-            #print("create_invoice, okular exitcode:", okular )
-        
+
+        exitcode = subprocess.check_call("/usr/bin/pdflatex '{0}'".format(fname), shell=True,
+                                         stdout=subprocess.DEVNULL)
+        # print("create_invoice, pdflatex exitcode:", exitcode )
+
+        assert exitcode == 0, "pdflatex failed!"
+        if exitcode == 0 and start_okular:
+            okular = subprocess.Popen(["/usr/bin/okular", fname2])
+            # print("create_invoice, okular exitcode:", okular )
+
         return fname2
-    
-    
+
+
+
     # make a list with tuition ids from a invoice_record
     def _extract_tuition_ids(self, invoice_record):
         id_numbers      = invoice_record.value("tuition_id_numbers")
