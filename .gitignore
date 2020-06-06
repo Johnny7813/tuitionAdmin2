@@ -4,3 +4,4 @@ unused/*
 .directory
 reportlab_invoice0*
 reportlab_test*
+secrets.py

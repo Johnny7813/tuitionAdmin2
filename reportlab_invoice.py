@@ -41,7 +41,6 @@ class InvoiceDocument:
         self.invoiceHeader = invoiceData.pop(0)
         self.invoiceData   = invoiceData
 
-        self.compileInvoice()
 
     # translate coordinates x,y in mm from top left
     # into pixels from bottom right
@@ -220,22 +219,22 @@ class InvoiceDocument:
     # y is the distance from the top
     def draw_invoice_foot(self, y):
         # canvas.saveState()
-        cx, cy = self.coord(self.lMargin, y+6)
+        cx, cy = self.coord(self.pageWidth/2.0, y+6)
         self.canvas.setFont('DejaVu', 10)
         # theight is becoming the total height of
         # the footer
         theight = 10
 
-        self.canvas.drawString(cx, cy,
+        self.canvas.drawCentredString(cx, cy,
             "Please pay by bank transfer to following account within 7 calendar days of invoice date:")
         cy -= 13
         theight += 13
-        self.canvas.drawString(cx, cy,
+        self.canvas.drawCentredString(cx, cy,
             "Account Title: Hannes Buchholzer, Sort Code: 20-42-58, Account Number: 23821595.")
         cy -= 13
         theight += 13
         self.canvas.setFont('DejaVu-Italics', 10)
-        self.canvas.drawString(cx, cy,
+        self.canvas.drawCentredString(cx, cy,
             "Please set the reference as the invoice reference number :")
         cy -= 20
         theight += 20
@@ -283,6 +282,6 @@ if __name__ == "__main__":
         ]
 
     inv = InvoiceDocument("reportlab_invoice02.pdf", invoiceData)
-    #inv.compileInvoice()
+    inv.compileInvoice()
 
 

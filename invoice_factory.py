@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MainWindow.ui'
-#
-# Created by: PyQt4 UI code generator 4.10.3
-#
-# WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import re
@@ -15,7 +10,7 @@ from Hmodel   import *
 
 import smtplib
 import mimetypes
-import sys
+import os.path
 from email.mime.multipart import MIMEMultipart
 from email import encoders
 from email.message import Message
@@ -25,22 +20,14 @@ from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from reportlab_invoice import *
 
+# I only use the secrets.py file on my
+# local machine
+if os.path.isfile("secrets.py"):
+    import secrets
+    email_password = secrets.email_password
+else:
+    email_password = secrets.email_password
 
-email_password = ""
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
 
 
 class invoice_factory(object):
@@ -63,8 +50,8 @@ class invoice_factory(object):
             
     # private function, make a new invoice id, does not update any counters
     def _new_invoice_id(self):
-        prefix     = self.model.invcount.data3(0,"invoice_number_prefix")
-        counter    = self.model.invcount.data3(0,"invoice_counter")
+        prefix     = self.model.invcount.data3(0, "invoice_number_prefix")
+        counter    = self.model.invcount.data3(0, "invoice_counter")
         invoice_id = prefix + "{:04d}".format(counter)
         return invoice_id
     
@@ -82,7 +69,6 @@ class invoice_factory(object):
         counter   = self.model.invcount.data3(0, "invoice_counter")
         counter  += 1
         self.model.invcount.setData3(0, "invoice_counter", counter)
-        
 
     
     # private function that makes a new invoice record
@@ -377,39 +363,6 @@ class invoice_factory(object):
         return fname
 
 
-    # This function is called by the "Create Receipt" buttons
-    # It uses the preset data in studentData and Fixme
-    ## arg 1: tuition_ids
-    ## arg 2: output dir
-    ## arg 3: optional start okular
-    def create_invoice2(self, tuition_ids, output_dir, start_okular=True):
-        # print(tuition_ids)
-        invoice_data = self._make_invoice_data(tuition_ids)
-        print("invoice_data:", invoice_data)
-        invoice_tex = self._create_invoice_string(invoice_data)
-
-        fname = output_dir + "/tuition-invoice-{0}.tex".format(invoice_data[0][2])
-        fname2 = re.sub("tex", "pdf", fname)
-
-        fhandle = open(fname, 'w')
-        fhandle.write(invoice_tex)
-        fhandle.close()
-
-        os.chdir(output_dir)
-
-        exitcode = subprocess.check_call("/usr/bin/pdflatex '{0}'".format(fname), shell=True,
-                                         stdout=subprocess.DEVNULL)
-        # print("create_invoice, pdflatex exitcode:", exitcode )
-
-        assert exitcode == 0, "pdflatex failed!"
-        if exitcode == 0 and start_okular:
-            okular = subprocess.Popen(["/usr/bin/okular", fname2])
-            # print("create_invoice, okular exitcode:", okular )
-
-        return fname2
-
-
-
     # make a list with tuition ids from a invoice_record
     def _extract_tuition_ids(self, invoice_record):
         id_numbers      = invoice_record.value("tuition_id_numbers")
@@ -433,8 +386,7 @@ class invoice_factory(object):
             tuition_ids.append(pref+"{:03d}".format(int(n)))
         return tuition_ids
     
-    
-    
+
     # make a list with tuition ids from a string
     # returns just the numbers
     def _extract_tuition_nums(self, id_string):
@@ -444,10 +396,7 @@ class invoice_factory(object):
             tuition_numbers.append(int(sn))
         return tuition_numbers
     
-    
-    
-    
-    
+
     ########################################################
     ## this python function sends emails using my gmail account
     ## you can use either plain or html text in the body
@@ -519,10 +468,7 @@ class invoice_factory(object):
         
         else :
             return False
-    
-    
-    
-    
+
     
     ########################################################
     ## this python function sends emails using my gmail account
@@ -578,33 +524,26 @@ class invoice_factory(object):
             ans = True 
             s   = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             try:
-                r = s.login("buchholzer.hannes@gmail.com", "15R7f3m2h5t2f4")
+                r = s.login("buchholzer.hannes@gmail.com", email_password)
                 r = s.send_message(msg)
                 s.quit()
             except:
                 ans = False
                 print("login response : ", r)
                 print("send_message response: ", r)
-                
-            
+
             return ans
         
         else :
             return False
     
-    
-    
-    
-    
+
     ## send invoice for a row invoice_index
     def send_invoice(self, invoice_index):
         invMod              = self.model.invoice
         self.student_id     = invMod.data3(invoice_index,"last_name", False)
         self.student_idx    = self.student_id-1
         self.invoice_id     = invMod.data3(invoice_index,"invoice_id")
-    
-        #print("student_id", self.student_id, "invoice_id", self.invoice_id)
-        #cind                = self.model.findStdcountKey( self.student_id )
     
         total_seesions      = invMod.data3(invoice_index,"total_sessions")
         active_seesions     = invMod.data3(invoice_index,"active_sessions")
@@ -670,11 +609,11 @@ class invoice_factory(object):
         invoice_file = self.create_invoice(tuition_ids, settings.invoice_dir )
         
         return self._send_reminder_email(self.student_id, invoice_file, reminder, True )
-        
-    
+
 
     ## check if the tuition record id is already in an invoice
     ## this is used in add_tuition_dialog to perform checks
+    ## here we can't eliminate uses of QSqlRecord
     def check_invoice(self, student_idx, tuition_record):
         student_id          = student_idx+1
         cind                = self.model.findStdcountKey(student_id)
@@ -685,13 +624,12 @@ class invoice_factory(object):
         if invoice_id == "":
             return True
         
-        # there is already a invoice record for this student
+        # there is already an active invoice record for lesson
         else:
             # we need to update this invoice record
             # first we need to find this record
             iind           = self.model.findInvoiceKey(invoice_id)
             invmod         = self.model.invoice
-            
             
             # we need to add the tuition number to tuition_id_numbers
             id_numbers     = str(invmod.data3(iind,"tuition_id_numbers"))
@@ -717,8 +655,7 @@ class invoice_factory(object):
                     return False
                 
         return True
-        
-    
+
     
     ## main function, does it almost all
     ## this function is called when a new tuition record is added
@@ -755,7 +692,7 @@ class invoice_factory(object):
         # there is already a invoice record for this student
         else:
             # we need to update this invoice record
-            # first we need to find this record
+            # first we need to find the index of this invoice record
             inv_idx        = self.model.findInvoiceKey(self.invoice_id)
             #print("Key: ",self.invoice_id, "Index: ", iind)
             
@@ -774,7 +711,7 @@ class invoice_factory(object):
             invMod.setData3(inv_idx, "active_sessions", count)
             
             
-            # we need to increase the payment of the invoice by total_cost_ps from the tuition record
+            # we need to increase the payment of the invoice by total_cost from the tuition record
             payment        = float(invMod.data3(inv_idx, "invoice_amount"))
             payment       += float(tutMod.data3(tut_idx, "total_cost"))
             invMod.setData3(inv_idx, "invoice_amount", payment)
@@ -801,276 +738,140 @@ class invoice_factory(object):
             
         return 0
     
-    
-    
-    
-        
-    # This function needs to be rewritten    
-    # check if the payment amount in tuition records has been
-    # correctly registered for paid invoice_send_date
+
+
+######################################################################################
+
+
+
+
+    # This function can spot inconsistencies between
+    # the invoice records and the tuition records
     def check_paid_invoice_carry_over(self):
+        problem_strings = ["payment not registered", "payment date differs from invoice",
+                           "invoice id wrong", "payment method wrong", "invoice total wrong"]
         print("\n\nChecking if paid invoices have been registered in tuition records")
-        last = self.model.invoice.rowCount()-1
-        paya = 0  # tuition payment asked
-        payr = 0  # tuition payment received
-        paym = 0  # difference in payment method
-        total_amount  = 0
-        pans = True
-        easy = False
-        hard = False
-        ind  = []
-        easy_ind         = []
-        dates            = []
-        easy_dates       = []
-        hard_ind         = []
-        easy_tuition_ids = []
-        hard_tuition_ids = []
-        
-        
-        for i in range(0, last+1):
-            rec  = self.model.invoice.record(i)
-            
+        last = self.model.invoice.rowCount()
+        paya = 0  # tuition payment in tuition record
+        paym = 0  # payment method
+        total_amount = 0
+        dates = []
+        faulty_invoices = []
+        invMod = self.model.invoice
+        tutMod = self.model.tuition
+
+        # loop over all invoice indices
+        for invidx in range(0, last):
+            idate = invMod.data3(invidx, "invoice_paid_date")
+            inv_id = invMod.data3(invidx, "invoice_id")
             # skip records that are not marked as paid
-            if rec.value("invoice_paid_yn") == "no" :  continue
-            #self.model.dump_record(rec)
-            tuition_ids = self._extract_tuition_ids(rec)
-            #print(tuition_ids)
-            
-            easy     = False
-            hard     = False
-            end      = len(tuition_ids)
-            ind.clear()
-            dates.clear()
-            total_amount   = 0  # total amount from the tuitions on the invoice
-            for j in range(0,end):
-                ti   = self.model.findTuitionKey(tuition_ids[j])
-                trec = self.model.tuition.record(ti)
-                ind.append(ti)
-                idate= rec.value("invoice_paid_date")
-                dates.append(idate)
-                
-                paya = trec.value("total_cost")
-                payr = trec.value("payment_amount_received")
-                paym = trec.value("payment_method")
-                pans = trec.value("payment_received_yn")
-                pdat = trec.value("payment_received_date")
-                iref = rec.value("invoice_id")
-                total_amount += paya   
+            if (invMod.data3(invidx, "invoice_paid_yn") == "no"):  continue
+            tuition_ids = self._extract_tuition_ids2(invidx)
 
-                
-                if (paya!=payr) or (paym!="bank transfer") or (pans=="no") or (pdat!=idate):
-                    easy = True
-                    print("\tPay difference: ", paya-payr,", payment method:", paym, ", payment received: ", pans)
-                    
-                    if (paym!="bank transfer")  or (iref != trec.value("invoice_number")):
-                        hard = True
-                    
-            payi  = rec.value("invoice_amount")
-            
-            if not total_amount == payi:
-                easy = True
-                hard = True
-                
-            if easy:
-                if not hard:
-                    easy_ind.extend(ind)
-                    easy_tuition_ids.extend(tuition_ids)
-                    easy_dates.extend(dates)
-                    
-                else :
-                    hard_ind.extend(ind)
-                    hard_tuition_ids.extend(tuition_ids)
-                    
-        
-        print("easy inconsistencies: \n", easy_tuition_ids)
-        #print("easy inconsistencies: \n", easy_ind)
-        #print("easy dates: \n", easy_dates)
-        print("hard inconsistencies: \n", hard_tuition_ids, "\n\n")
-        #print("hard inconsistencies: \n", hard_ind)
-            
-        
-        ####  inform user with QMessageBox
-        intot  = len(easy_ind) + len(hard_ind)
-        ine    = len(easy_ind)
-            
-        details  = "Easy fixable inconsitencies:\n======================\n"
-        details += "List of tuition_ids of these inconsistencies: "
-        details += str(easy_tuition_ids) + "\n\n\n"
-        details += "Hard non-fixable inconsitencies:\n===========================\n"
-        details += "List of tuition_ids of these inconsistencies: "
-        details += str(hard_tuition_ids) + "\n"
-            
-        msgBox = QtWidgets.QMessageBox()
-        if ine == 0:
-            if intot == 0:
-                text = "We have found no inconsitencies."
-            else:    
-                text = "We have found {0} inconsitencies. But none of them are fixable".format(intot)
-                msgBox.setDetailedText(details)
-            msgBox.setText(text)
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
-            msgBox.exec()
-        else:
-            text = "We have found {0} inconsitencies. Of these {1} are fixable. Do you want to fix these?".format(intot, ine)
-            msgBox.setText(text)
-            msgBox.setDetailedText(details)
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
-            ret = msgBox.exec()
-                
-            if ret==QtWidgets.QMessageBox.Ok :
-                    self.fix_paid_invoice_carry_over(easy_ind, easy_dates)
-    
-    
-
-
-
-
-# check if the payment amount in tuition records has been
-    # correctly registered for paid invoice_send_date
-    def check_paid_invoice_carry_over2(self):
-        print("\n\nChecking if paid invoices have been registered in tuition records")
-        last             = self.model.invoice.rowCount()-1 #last invoice index
-        paya             = 0  # tuition payment asked
-        payr             = 0  # tuition payment received
-        paym             = 0  # difference in payment method
-        total_amount     = 0
-        pans             = True
-        easy             = False
-        hard             = False
-        ind              = []
-        easy_ind         = []
-        dates            = []
-        easy_dates       = []
-        hard_ind         = []
-        easy_tuition_ids = []
-        hard_tuition_ids = []
-        invMod           = self.model.invoice
-        tutMod           = self.model.tuition
-        
-        for i in range(0, last+1):
-            
-            # skip records that are not marked as paid
-            if invMod.data3(i,"invoice_paid_yn") == "no" :  continue
-            tuition_ids = self._extract_tuition_ids2(i)
-            #print(tuition_ids)
-            
-            easy     = False
-            hard     = False
-            end      = len(tuition_ids)
-            ind.clear()
-            dates.clear()
-            total_amount   = 0  # total amount from the tuitions on the invoice
-            for tuition_id in tuition_ids:
-                tidx   = self.model.findTuitionKey(tuition_id)
-                trec   = self.model.tuition.record(tidx)
-                ind.append(tidx)
-                idate  = invMod.data3(i,"invoice_paid_date")
-                dates.append(idate)
-                
-                
+            problems = []
+            tindices = []
+            dates = []
+            total_amount = 0  # total amount from the tuitions on the invoice
+            for tutid in tuition_ids:
+                tidx = self.model.findTuitionKey(tutid)
+                tindices.append(tidx)
+                tdate = tutMod.data3(tidx, "tuition_date")
+                dates.append(tdate)
                 paya = tutMod.data3(tidx, "total_cost")
-                payr = tutMod.data3(tidx, "payment_amount_received")
                 paym = tutMod.data3(tidx, "payment_method")
-                pans = tutMod.data3(tidx, "payment_received_yn")
-                pdat = tutMod.data3(tidx, "payment_received_date")
-                iref = invMod.data3(i, "invoice_id")
-                total_amount += paya   
+                preceived = tutMod.data3(tidx, "payment_received")
+                pdate = tutMod.data3(tidx, "payment_date")
+                tinv_id = tutMod.data3(tidx, "invoice_number")
+                total_amount += paya
 
-                
-                if (paya!=payr) or (paym!="bank transfer") or (pans=="no") or (pdat!=idate):
-                    easy = True
-                    print("\tPay difference: ", paya-payr,", payment method:", paym, ", payment received: ", pans)
-                    
-                    if (paym!="bank transfer")  or (iref != trec.value("invoice_number")):
-                        hard = True
-                    
-            payi  = invMod.data3(i, "invoice_amount")
-            
-            if not total_amount == payi:
-                easy = True
-                hard = True
-                
-            if easy:
-                if not hard:
-                    easy_ind.extend(ind)
-                    easy_tuition_ids.extend(tuition_ids)
-                    easy_dates.extend(dates)
-                    
-                else :
-                    hard_ind.extend(ind)
-                    hard_tuition_ids.extend(tuition_ids)
-                    
-        
-        print("easy inconsistencies: \n", easy_tuition_ids)
-        #print("easy inconsistencies: \n", easy_ind)
-        #print("easy dates: \n", easy_dates)
-        print("hard inconsistencies: \n", hard_tuition_ids, "\n\n")
-        #print("hard inconsistencies: \n", hard_ind)
-            
-        
+                # mark incosistencies
+                if (preceived == "no"):
+                    if not 0 in problems: problems.append(0)
+                if (pdate != idate):
+                    if not 1 in problems: problems.append(1)
+                if (inv_id != tinv_id):
+                    if not 2 in problems: problems.append(2)
+                if (paym != "bank transfer"):
+                    if not 3 in problems: problems.append(3)
+
+            payi = invMod.data3(invidx, "invoice_amount")
+            if total_amount != payi:
+                problems.append(4)
+
+            if problems:
+                faulty_invoice = [invidx, inv_id, tindices, tuition_ids, dates, problems]
+                faulty_invoices.append(faulty_invoice)
+
+        num_easy_faults = 0
+        details = ""
+        for entry in faulty_invoices:
+            #print("\ninvoice number: ", entry[1])
+            #print("tuition indices: ", entry[3])
+            #print("tuition dates: ", entry[4])
+            #print("faults: ", entry[5])
+            if max(entry[5]) < 3: num_easy_faults += 1
+            details += "invoice id: {}\n".format(entry[1])
+            details += "corresponding tuition ids: {}\n".format(entry[3])
+            details += "problems: "
+            for n in entry[5]:
+                details += problem_strings[n]
+                if n < 3: details += " -> fixable "
+                else: details += " -> hard "
+                if n != entry[5][-1]: details += ", "
+            details += "\n\n"
+
         ####  inform user with QMessageBox
-        intot  = len(easy_ind) + len(hard_ind)
-        ine    = len(easy_ind)
-            
-        details  = "Easy fixable inconsitencies:\n======================\n"
-        details += "List of tuition_ids of these inconsistencies: "
-        details += str(easy_tuition_ids) + "\n\n\n"
-        details += "Hard non-fixable inconsitencies:\n===========================\n"
-        details += "List of tuition_ids of these inconsistencies: "
-        details += str(hard_tuition_ids) + "\n"
-            
+        num_faults = len(faulty_invoices)
+
         msgBox = QtWidgets.QMessageBox()
-        if ine == 0:
-            if intot == 0:
-                text = "We have found no inconsitencies."
-            else:    
-                text = "We have found {0} inconsitencies. But none of them are fixable".format(intot)
-                msgBox.setDetailedText(details)
-            msgBox.setText(text)
+        if num_faults == 0:
+            text = "We have found no inconsitencies."
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
-            msgBox.exec()
         else:
-            text = "We have found {0} inconsitencies. Of these {1} are fixable. Do you want to fix these?".format(intot, ine)
-            msgBox.setText(text)
-            msgBox.setDetailedText(details)
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
-            ret = msgBox.exec()
-                
-            if ret==QtWidgets.QMessageBox.Ok :
-                    self.fix_paid_invoice_carry_over(easy_ind, easy_dates)
-    
+            text = "We have found {0} inconsitencies.".format(num_faults)
+            if num_easy_faults == 0:
+                text += " But none of them are fixable."
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            else:
+                text += " Of these {0} are fixable. Do you want to fix these?".format(num_easy_faults)
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+
+        msgBox.setDetailedText(details)
+        msgBox.setText(text)
+        msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+        ret = msgBox.exec()
+
+        if ret == QtWidgets.QMessageBox.Ok and num_easy_faults > 0:
+            self.fix_invoice_carry_over_faults(faulty_invoices)
 
 
+    # in this function we try to fix fixable faults that
+    # have been identified in the function 'check_paid_invoice_carry_over'
+    # the variable faulty_invoices was defined in that function
+    def fix_invoice_carry_over_faults(self, faulty_invoices):
+        invMod = self.model.invoice
+        tutMod = self.model.tuition
 
+        for entry in faulty_invoices:
+            # entry[5] is a integer list of the problems of that invoice
+            # 0: in some tuition records corresponding to the invoice
+            #    are not marked as paid even though the invoice is
+            if 0 in entry[5]:
+                for tidx in entry[2]:
+                    tutMod.setData3(tidx, "payment_received", "yes")
 
+            # 1: in some tuition records corresponding to the invMod
+            #    the payment date differs from the invoice payment date
+            if 1 in entry[5]:
+                iidx = entry[0]
+                idate = invMod.data3(iidx,"invoice_paid_date")
+                for tidx in entry[2]:
+                    tutMod.setData3(tidx, "payment_date", idate)
 
+            # 2: in some tuition records corresponding to the invoice
+            #    have a invoice id that differs from invoice's id
+            if 2 in entry[5]:
+                inv_id = entry[1]
+                for tidx in entry[2]:
+                    tutMod.setData3(tidx, "invoice_number", inv_id)
 
-    
-
-    # fix easy inconsitencies
-    def fix_paid_invoice_carry_over(self, indices, dates):
-        print("fixing easy inconsitencies...")
-        #indices = dat[0]
-            
-        end   = len(indices)
-        for i in range(0,end):
-            ind = indices[i]
-            dat = dates[i]
-            rec = self.model.tuition.record(ind)
-            rec.setValue("payment_method","bank transfer")
-            rec.setValue("payment_received_yn","yes")
-            rec.setValue("payment_received_date",dat)
-            v   = rec.value("total_cost_ps")
-            rec.setValue("payment_amount_received",v)
-            self.model.tuition.setRecord(ind,rec)
-                
-        print("Done.")
-        
-        
-    
-
-    
