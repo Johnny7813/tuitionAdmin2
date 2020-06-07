@@ -1,7 +1,14 @@
+# this file is based on the designer file
+# ui_enter_password_dialog.py
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class PasswordDialog(QtWidgets.QDialog):
+    """
+    This dialog is for inputting passwords for
+    an email account. This account can be specified
+    with the keyword account in the init file.
+    """
     def __init__(self, parent=None, account="buchholzer.hannes@gmail.com"):
         super().__init__(parent)
         self.setObjectName("PasswordDialog")
