@@ -2,32 +2,18 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import re
 import os
 import subprocess
-from settings import *
 from Hmodel   import *
-
 import smtplib
 import mimetypes
 import os.path
 from email.mime.multipart import MIMEMultipart
 from email import encoders
-from email.message import Message
-from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
-from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from reportlab_invoice import *
-
-# I only use the secrets.py file on my
-# local machine
-if os.path.isfile("secrets.py"):
-    import secrets
-    email_password = secrets.email_password
-else:
-    email_password = secrets.email_password
-
+import enter_password_dialog
 
 
 class invoice_factory(object):
@@ -395,7 +381,30 @@ class invoice_factory(object):
         for sn in tuition_strings:
             tuition_numbers.append(int(sn))
         return tuition_numbers
-    
+
+
+    # return email password
+    # here is the place to change
+    # the account string displayed
+    def get_email_password(self):
+        # I only use the secrets.py file on my
+        # local machine
+        if os.path.isfile("secrets.py"):
+            import secrets
+            return secrets.email_password
+        else:
+            import enter_password_dialog
+
+            passwordDialog = enter_password_dialog.PasswordDialog(
+                                self.parent_widget, "buchholzer.hannes@gmail.com")
+
+            ans = passwordDialog.exec()
+
+            if ans == QtWidgets.QDialog.Accepted:
+                return passwordDialog.password()
+            else:
+                return ""
+
 
     ########################################################
     ## this python function sends emails using my gmail account
@@ -451,19 +460,19 @@ class invoice_factory(object):
             attachment.add_header("Content-Disposition", "attachment", filename=invoice_file)
             msg.attach(attachment)
             
-            # Send the message via our own SMTP server.
-            ans = True 
-            s   = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            # Send the message via our email account
+            ans = True
+            email_password = self.get_email_password()
+            s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             try:
-                r = s.login("buchholzer.hannes@gmail.com", email_password)
-                r = s.send_message(msg)
+                s.login("buchholzer.hannes@gmail.com", email_password)
+                s.send_message(msg)
                 s.quit()
             except:
                 ans = False
-                print("login response : ", r)
-                print("send_message response: ", r)
-                
-            
+                print("Failed to send Email.")
+                QtWidgets.QMessageBox.information(self.parent_widget, "Sending Email failed",
+                                "There was an error sending the email!\nMaybe password is wrong?")
             return ans
         
         else :
@@ -520,17 +529,19 @@ class invoice_factory(object):
             attachment.add_header("Content-Disposition", "attachment", filename=invoice_file)
             msg.attach(attachment)
             
-            # Send the message via our own SMTP server.
-            ans = True 
-            s   = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            # Send the message via our email account
+            ans = True
+            email_password = self.get_email_password()
+            s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             try:
-                r = s.login("buchholzer.hannes@gmail.com", email_password)
-                r = s.send_message(msg)
+                s.login("buchholzer.hannes@gmail.com", email_password)
+                s.send_message(msg)
                 s.quit()
             except:
                 ans = False
-                print("login response : ", r)
-                print("send_message response: ", r)
+                print("Failed to send Email.")
+                QtWidgets.QMessageBox.information(self.parent_widget, "Sending Email failed",
+                                "There was an error sending the email!\nMaybe password is wrong?")
 
             return ans
         
