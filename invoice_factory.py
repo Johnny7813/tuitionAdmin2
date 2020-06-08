@@ -13,7 +13,7 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from reportlab_invoice import *
-import enter_password_dialog
+from settings import settings
 
 
 class invoice_factory(object):
@@ -235,8 +235,8 @@ class invoice_factory(object):
     # It uses the preset data in studentData and Fixme 
     ## arg 1: tuition_ids
     ## arg 2: output dir
-    ## arg 3: optional start okular
-    def create_invoice(self, tuition_ids, output_dir, start_okular=True):
+    ## arg 3: optional start pdfViewer
+    def create_invoice(self, tuition_ids, output_dir, start_pdfViewer=True):
         #print(tuition_ids)
         fname = output_dir + "/tuition-invoice-{0}.pdf".format(self.invoice_id)
         invoiceData = self._make_invoice_data(tuition_ids)
@@ -244,8 +244,8 @@ class invoice_factory(object):
         invDoc = InvoiceDocument(fname, invoiceData)
         invDoc.compileInvoice()
 
-        if start_okular:
-            okular = subprocess.Popen(["/usr/bin/okular", fname])
+        if start_pdfViewer:
+            pdfViewer = subprocess.Popen([settings.pdf_viewer, fname])
         
         return fname
 

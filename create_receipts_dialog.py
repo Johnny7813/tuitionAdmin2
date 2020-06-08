@@ -203,7 +203,7 @@ class create_receipts_Dialog(QtWidgets.QDialog, ui_create_receipts.Ui_Dialog):
         receipt = ReceiptDocument(fname, receiptData)
         receipt.compileReceipt()
 
-        subprocess.Popen(["/usr/bin/okular", fname])
+        subprocess.Popen([settings.pdf_viewer, fname])
 
         ans    = QtWidgets.QMessageBox.information( self, "keep receipt?", "Mark this receipt as created?",
                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes)

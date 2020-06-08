@@ -389,9 +389,8 @@ class HModel(object):
         col1   = schmod.fieldIndex("last_name")
         col2   = schmod.fieldIndex("weekday")
         size   = schmod.rowCount()
-        
+
         for i in range(0,size):
-            #rec = model.record(i)
             id2 = schmod.data2(i,col1, False)
             if student_id==id2 :
                 day = schmod.data2(i,col2, False)

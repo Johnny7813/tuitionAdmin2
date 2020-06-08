@@ -29,6 +29,6 @@ todo:
 
 * maybe send invoices different, maybe use python email module.  --> done!
 
-* check if schedule is still working, i.e. are the schedule entries really used?
+* check if schedule is still working, i.e. are the schedule entries really used? --> yes
 
-* change email used ?
+* change email used ? --> done

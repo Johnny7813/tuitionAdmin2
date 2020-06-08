@@ -26,4 +26,7 @@ class settings(object):
     backup_span     = 10    # every 10 days we do a new backup
     backup_dir      = "/home/hannes/Dropbox/DB_Backup"  # we write the backups in here
     backup_time     = 10     # make a call every 10 minutes
-    
+
+    #pdf viewer program to use to display pdf invoices and receipts
+    #pdf_viewer      = "/usr/bin/pdfmod"
+    pdf_viewer      = "/usr/bin/okular"
