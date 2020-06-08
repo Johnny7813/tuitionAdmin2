@@ -26,8 +26,6 @@ import sys
 __version__ = "2.2.1"
 
 
-
-
 # multiple inheritance
 class MainWindow(QtWidgets.QMainWindow, ui_tuitionAdmin2.Ui_MainWindow):
     def __init__(self, desktop):
@@ -37,9 +35,9 @@ class MainWindow(QtWidgets.QMainWindow, ui_tuitionAdmin2.Ui_MainWindow):
         
         self.dev_version    = settings.dev_version
         if self.dev_version :
-            self.setWindowTitle(_translate("MainWindow", "TuitionAdmin2 Development", None))
+            self.setWindowTitle("TuitionAdmin2 Development")
         else :
-            self.setWindowTitle(_translate("MainWindow", "TuitionAdmin2 Deployed", None))
+            self.setWindowTitle("TuitionAdmin2 Deployed")
             
         self.desktop        = desktop
         #creating models and views    

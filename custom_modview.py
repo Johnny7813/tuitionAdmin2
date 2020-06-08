@@ -34,16 +34,6 @@ class HComboBox(QtWidgets.QComboBox):
         self.sList = SqlList(db, table, True)
         
         super().insertItems(0, self.sList.listB)
-        
-    #def currentText(self):
-        #text = super().currentText()
-        
-        #res = self.sList.getAatBval(text)
-        
-        #return res
-        
-        
-
 
 
 # This is a QDate Delegate
@@ -62,6 +52,7 @@ class dateDelegate(QtWidgets.QStyledItemDelegate):
         
     def setEditorData(self, editor, index):
         date = index.data()
+        #print("setEditorData: ", date)
         editor.setDate(date)
 
 
@@ -82,9 +73,6 @@ class dateTriggerDelegate(dateDelegate):
         index2 = model.mapToSource(index) ## translate proxy index to original index
         self.invoice_paid_date_trigger.emit(index2, pdate)
         
-
-
-
 
 # This is a QTime Delegate
 class timeDelegate(QtWidgets.QStyledItemDelegate):
@@ -151,9 +139,6 @@ class comboDelegate(QtWidgets.QStyledItemDelegate):
         editor.setCurrentIndex(ind)
 
 
-
-
-
 # This is a QComboBox Delegate that must be initated with
 # a string list that make it's items
 class comboDelegate2(QtWidgets.QStyledItemDelegate):
@@ -187,11 +172,6 @@ class comboDelegate2(QtWidgets.QStyledItemDelegate):
             editor.setCurrentIndex(ind)
 
 
-
-
-
-
-
 # this is a Delegate particularly for the invoice_records.invoice_paid column
 # it changes the invoice_paid_date
 class ynTriggerDelegate(comboDelegate, QObject):
@@ -215,8 +195,6 @@ class ynTriggerDelegate(comboDelegate, QObject):
         self.invoice_paid_trigger.emit(index2, eindex)
         model.setData(index, text, QtCore.Qt.EditRole)
         
-
-
 
 # This is a delegate for true/false or yes/no options
 # it basically is a tick box, the underlying data is 0 or 1
@@ -258,9 +236,8 @@ class tickBoxDelegate(QtWidgets.QStyledItemDelegate):
             painter.fillRect(3,3,self.sF-6, self.sF-6, QtGui.QColor(0,0,0))
 
         painter.restore()
-        
-        
-    
+
+
     def setModelData(self, editor, model, index):
         if editor.isChecked() :
             model.setData( index, 1 )
@@ -280,9 +257,6 @@ class tickBoxDelegate(QtWidgets.QStyledItemDelegate):
     def sizeHint(self, option, index ):
         #rect = option.rect
         return QtCore.QSize(self.sF, self.sF) 
-        
-        
-
 
 
 ## This class handles the invoice paid effects on the tuition_records table
@@ -323,8 +297,7 @@ class processInvoiceEffects(QObject):
             for i in range(0, len(tuition_ids)):
                 self.set_tuition_info(tuition_ids[i], word)
         
-    
-    
+
     #@pyqtSlot(QtCore.QModelIndex, QtCore.QDate)
     def handle_payment_date(self, index, date):
         irow        = index.row()
@@ -345,8 +318,7 @@ class processInvoiceEffects(QObject):
             trow    = self.model.findTuitionKey(tuition_ids[i])
             self.model.tuition.setData3(trow, "payment_date", date )
     
-    
-    
+
     # make a list with tuition ids from a invoice_record
     def _extract_tuition_ids(self, irow):
         invMod          = self.model.invoice
@@ -358,8 +330,7 @@ class processInvoiceEffects(QObject):
             tuition_ids.append(pref+"{:03d}".format(int(tuition_numbers[i])))
         return tuition_ids
     
-    
-    
+
     # set payment data in tuition records
     def set_tuition_info(self, tuition_id, word):
         tutMod = self.model.tuition
@@ -383,8 +354,7 @@ class processInvoiceEffects(QObject):
             #print("processInvoiceEffects: set sent date as today")
             invMod.setData3(self.irow, "invoice_paid_date", QtCore.QDate(2000,1,1))
     
-    
-    
+
     # sets the invoice sent date in invoice_records
     def set_invoice_sent_date(self, ans):
         invMod = self.model.invoice
@@ -395,4 +365,3 @@ class processInvoiceEffects(QObject):
             #print("processInvoiceEffects: set sent date as today")
             invMod.setData3(self.irow,"invoice_send_date", QtCore.QDate(2000,1,1))
     
-

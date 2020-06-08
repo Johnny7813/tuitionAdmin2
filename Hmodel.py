@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtSql
+from PyQt5 import QtCore, QtGui, QtSql, QtWidgets
 from PyQt5.QtCore   import QObject, pyqtSignal, pyqtSlot
 from HSqlTableModel import *
 from settings       import *
 import re
+import sys
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -28,6 +29,7 @@ except AttributeError:
 class HModel(object): 
     def __init__(self,  statusBar):
         self.db = QtSql.QSqlDatabase.addDatabase("QMYSQL")
+        #self.db = QtSql.QSqlDatabase.addDatabase("QSQLITE")
         self.db.setHostName("localhost");
         self.db.setDatabaseName(settings.database) # operates on a copy for my real database
         #self.db.setDatabaseName(settings.sqlite_db) # operates on a copy for my real database
@@ -58,11 +60,11 @@ class HModel(object):
         today       = QtCore.QDate.currentDate()
         
         for i in range(0, stdmod.rowCount()):
-            date      = stdmod.data3(i,"end_date")
+            #date      = stdmod.data3(i,"end_date")
             is_active = stdmod.data3(i,"is_active") # is_active column, can't use name because this column has been exchanged
 
             
-            # shall I encoude 1 for "yes". I could use my class SqlList
+            # make a list of active students
             if (is_active == "yes"):
                 self.fnames.append(stdmod.data3(i,"first_name"))
                 self.lnames.append(stdmod.data3(i,"last_name"))

@@ -237,9 +237,7 @@ class HSqlTableModel(QtSql.QSqlTableModel):
         return trValue
     
     
-    
-    
-    
+
     #setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole )
     def setData(self, modind, value, role = QtCore.Qt.EditRole):
         col = modind.column()
@@ -360,8 +358,7 @@ class HSqlTableModel(QtSql.QSqlTableModel):
         return ret
         
     
-    
-    
+
     #own version of submit to spot errors
     def submit(self):
         ans = super().submit()
