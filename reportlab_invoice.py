@@ -37,7 +37,7 @@ class InvoiceDocument:
         pdfmetrics.registerFont(TTFont('DejaVu-Italics', self.fontPathBase % "DejaVuSerif-Italic"))
 
         self.tutorData = ["Hannes Buchholzer", "3 April Close, Horsham, RH12 2LL",
-                          "07516-100218", "buchholzer.hannes@gmail.com"]
+                          "07516-100218", "Hannes.Buchholzer@zohomail.eu"]
         self.invoiceHeader = invoiceData.pop(0)
         self.invoiceData   = invoiceData
 

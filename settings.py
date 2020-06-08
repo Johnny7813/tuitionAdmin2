@@ -8,7 +8,7 @@ class settings(object):
     invoice_dir     = "/home/hannes/Documents/Private Tuition/Administration/invoices"
     receipt_dir     = "/home/hannes/Documents/Private Tuition/Administration/receipts"
     database        = "private_tuition_d3"
-    sqlite_db       = "/home/hannes/Database/SQLite/private_tuition_d3"
+    sqlite_db       = "/home/hannes/Database/SQLite/private_tuition_d3.sqlite"
     receipts_left   = 0
     
     time_recording  = True

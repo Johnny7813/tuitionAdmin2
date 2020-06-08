@@ -349,9 +349,9 @@ class invoice_factory(object):
         if (not question) or ans == QtWidgets.QMessageBox.Yes :
             # email subject
             msg['Subject'] = "invoice for maths tuition"
-            msg['From']    = "buchholzer.hannes@gmail.com"
+            msg['From']    = "Hannes.Buchholzer@zohomail.eu"
             msg['To']      = emaildat[2]
-            msg.attach(MIMEText(email_text))
+            msg.attach(MIMEText(email_text, "plain"))
             
             fp         = open(invoice_file, "rb")
             attachment = MIMEBase(maintype, subtype)
@@ -364,9 +364,9 @@ class invoice_factory(object):
             # Send the message via our email account
             ans = True
             email_password = self.get_email_password()
-            s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            s = smtplib.SMTP_SSL('smtp.zoho.eu', 465)
             try:
-                s.login("buchholzer.hannes@gmail.com", email_password)
+                s.login("Hannes.Buchholzer@zohomail.eu", email_password)
                 s.send_message(msg)
                 s.quit()
             except:
@@ -413,14 +413,15 @@ class invoice_factory(object):
         if question:
             ans = QtWidgets.QMessageBox.question( self.parent_widget, "send invoice?", text , 
                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes)
-        
+
+
         # no question, assume we should send
         if (not question) or ans == QtWidgets.QMessageBox.Yes :
             # email subject
             msg['Subject'] = "invoice for maths tuition"
-            msg['From']    = "buchholzer.hannes@gmail.com"
+            msg['From']    = "Hannes.Buchholzer@zohomail.eu"
             msg['To']      = emaildat[2]
-            msg.attach(MIMEText(email_text))
+            msg.attach(MIMEText(email_text,"plain"))
             
             fp         = open(invoice_file, "rb")
             attachment = MIMEBase(maintype, subtype)
@@ -433,9 +434,9 @@ class invoice_factory(object):
             # Send the message via our email account
             ans = True
             email_password = self.get_email_password()
-            s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            s = smtplib.SMTP_SSL('smtp.zoho.eu', 465)
             try:
-                s.login("buchholzer.hannes@gmail.com", email_password)
+                s.login("Hannes.Buchholzer@zohomail.eu", email_password)
                 s.send_message(msg)
                 s.quit()
             except:
