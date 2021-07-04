@@ -28,14 +28,22 @@ except AttributeError:
 ### order: invoice, tuition, mileage, student_info, student_counter, invoice_counter
 class HModel(object): 
     def __init__(self,  statusBar):
-        self.db = QtSql.QSqlDatabase.addDatabase("QMYSQL")
-        #self.db = QtSql.QSqlDatabase.addDatabase("QSQLITE")
-        self.db.setHostName("localhost");
-        self.db.setDatabaseName(settings.database) # operates on a copy for my real database
-        #self.db.setDatabaseName(settings.sqlite_db) # operates on a copy for my real database
-        self.db.setConnectOptions("UNIX_SOCKET=/home/hannes/Database/DB/hannes_db.socket")
-        
+
+        self.db = QtSql.QSqlDatabase.addDatabase("QODBC3");
+        #connectString = "DRIVER=C:/Program Files\MariaDB/MariaDB ODBC Driver 64-bit/maodbcs.dll;" \
+        #    "SERVERNODE=localport:3306;" \
+        #    "UID=root;" \
+        #    "PWD=test;" \
+        #    "SCROLLABLERESULT=true"
+        self.db.setDatabaseName("private_tuition_v3")
+        self.db.setHostName("localhost")
+        self.db.setPort(3306)
+        self.db.setUserName("root")
+        self.db.setPassword("test")
+
+
         if not self.db.open():
+            print("Hannes an error happened!")
             QtWidgets.QMessageBox.warning(None, "Database log",
                            "Database Error: {0}".format(self.db.lastError().text()))
             sys.exit(1)
