@@ -30,11 +30,6 @@ class HModel(object):
     def __init__(self,  statusBar):
 
         self.db = QtSql.QSqlDatabase.addDatabase("QODBC3");
-        #connectString = "DRIVER=C:/Program Files\MariaDB/MariaDB ODBC Driver 64-bit/maodbcs.dll;" \
-        #    "SERVERNODE=localport:3306;" \
-        #    "UID=root;" \
-        #    "PWD=test;" \
-        #    "SCROLLABLERESULT=true"
         self.db.setDatabaseName("private_tuition_v3")
         self.db.setHostName("localhost")
         self.db.setPort(3306)
@@ -137,7 +132,7 @@ class HModel(object):
         self.mileage = HSqlTableModel(None, self.db)
         self.mileage.setTable("mileage_records")
         self.mileage.setEditStrategy(QtSql.QSqlTableModel.OnManualSubmit)
-        self.mileage.setSort(0, QtCore.Qt.AscendingOrder ) #ascending order for entry_nr
+        self.mileage.setSort(0, QtCore.Qt.DescendingOrder ) #ascending order for entry_nr
         self.mileage.setReplacement2(4, "help_travel_reason", True)
         self.mileage.setReplacement2(5, "help_vehicle", True)
         self.mileage.select()
@@ -210,7 +205,7 @@ class HModel(object):
         self.tuition.setReplacement2(18, 'help_payment', active=True)
         self.tuition.setReplacement2(19, 'help_yesno', active=True)
         self.tuition.setReplacement2(21, 'help_yesno', active=True)
-        #self.tuition.setSort(0, QtCore.Qt.AscendingOrder ) #ascending order for tuition_id
+        self.tuition.setSort(3, QtCore.Qt.DescendingOrder ) #ascending order for tuition_id
         self.tuition.setHeaderData(0, 1, "tuition id")
         self.tuition.setHeaderData(1, 1, "student\nfirst name")
         self.tuition.setHeaderData(2, 1, "student\nlast name")
@@ -234,7 +229,7 @@ class HModel(object):
         self.invoice.setTable("invoice_records")
         #self.invoice.setFilter(" invoice_id <= 'invb-0016'")
         self.invoice.setEditStrategy(QtSql.QSqlTableModel.OnManualSubmit)
-        self.invoice.setSort(0, QtCore.Qt.AscendingOrder ) #ascending order for tuition_date
+        self.invoice.setSort(0, QtCore.Qt.DescendingOrder ) #ascending order for tuition_date
         self.invoice.select()
         self.invoice.setReplacement(1, "student_info", "student_id", "last_name")
         self.invoice.setReplacement2(2, 'help_yesno', active=True)
@@ -257,7 +252,7 @@ class HModel(object):
         self.time = HSqlTableModel(None, self.db)
         self.time.setTable("time_recording")
         self.time.setEditStrategy(QtSql.QSqlTableModel.OnManualSubmit)
-        self.time.setSort(0, QtCore.Qt.AscendingOrder ) #ascending order for tuition_date
+        self.time.setSort(0, QtCore.Qt.DescendingOrder ) #ascending order for tuition_date
         self.time.select()
         # change horizontal header data maybe think of a more portable way to do this
         self.time.setHeaderData(0, 1, "entry_nr")
@@ -311,6 +306,7 @@ class HModel(object):
     def _find1raw(self,start, end, key, model, col):
         for i in range(start,end+1):
             val     = model.data2(i,col)
+            print("_find2raw: index=", i, " val=", val, " key=", key)
             if  key == val:
                 return i
         return -1
@@ -323,9 +319,22 @@ class HModel(object):
         med   = end - 30   # -5
         ind   = self._find2(med, end, key, model, col)
         if ind>=0: return ind
-        return self._find1raw(0, med, key, model, col) #+0
+        return self._find1raw(0, med, key, model, col)
     
-    
+
+    def _find2raw(self, start, key, model, col):
+        val = ""
+        i = start
+        while not val == None:
+            val = model.data2(i,col)
+            print("_find2raw: index=", i, " val=",val, " key=", key)
+            if val == key:
+                return i
+            i += 1
+        return -1
+
+
+
     # find by searching one by one from the end to start both including
     # col is the column as number
     def _find2(self, start, end, key, model, col):
@@ -338,22 +347,48 @@ class HModel(object):
         
     # find by searching one by one from rowCount()  to 0
     # col is the column as number
-    def _find2e(self, key, model, col):
-        start = 0
+    def _find2e(self, key, model, col, search_range=None):
         end   = model.rowCount()
-        return self._find2(0, end, key, model, col)
-    
-    
+        if search_range == None:
+            start = 0
+        else:
+            start = end - search_range
+        count = model.rowCount()
+        print("find2e number of rows: ", count)
+        return self._find2(start, end, key, model, col)
+
+    # find by searching one by one from 1  to rowCount()
+    # or search_range if it is defined
+    # col is the column as number
+    def _find2a(self, key, model, col, search_range=None):
+        start = 0
+        if search_range == None:
+            end = model.rowCount()
+        else:
+            end = search_range + 1
+        return self._find1raw(start, end, key, model, col)
+
+
+
+
     # high level search functions for certain tables
     
     ## find keyword in primary key for table invoice_records
     def findInvoiceKey(self,key):
-        index  =  int(re.match("\w+[-_]0*([1-9][0-9]*)", key ).group(1))-1
+        start =  int(re.match("\w+[-_]0*([1-9][0-9]*)", key ).group(1))+600
         invmod =  self.invoice
         col    =  invmod.fieldIndex("invoice_id")
-        if  key == invmod.data2(index,col):
-            return index
-        index  = self._find2e(key, invmod, col)
+
+        #for i in range(5):
+        #    if (invmod.canFetchMore):
+        #        invmod.fetchMore()
+        #    else:
+        #        break
+
+        index  = self._find2a(key, invmod, col, search_range=20)
+        #self._find2raw(start, key, invmod, col)
+
+        print("findInvoiceKey index: ", index)
         assert index >= 0, "findInvoiceKey: key not found!"
         return index
     
@@ -400,9 +435,12 @@ class HModel(object):
 
         for i in range(0,size):
             id2 = schmod.data2(i,col1, False)
+            #print("findScheduleKey: id2=", id2)
             if student_id==id2 :
                 day = schmod.data2(i,col2, False)
-                if day == weekday: 
+                #print("findScheduleKey: weekday=", weekday, " day=", day)
+                if day == weekday:
+                    print("findScheduleKey: key found!")
                     return i
                 
         print("findScheduleKey: key not found!")
