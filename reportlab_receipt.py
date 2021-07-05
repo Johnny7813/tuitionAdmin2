@@ -6,7 +6,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import pink, black, red, blue, green
 from PyQt5.QtCore import QDate
-
+from pathlib import Path
 
 class ReceiptDocument:
     """This class represents a pdf receipt.
@@ -33,11 +33,12 @@ class ReceiptDocument:
         self.iSpace = 20  # in pixels
         self.rightColumn = self.pageWidth / 2.0
 
-        self.fontPathBase = "./fonts/%s.ttf"
-        #print("Font: ", self.fontPathBase % "DejaVuSerif")
-        pdfmetrics.registerFont(TTFont('DejaVu', self.fontPathBase % "DejaVuSerif"))
-        pdfmetrics.registerFont(TTFont('DejaVu-Bold', self.fontPathBase % "DejaVuSerif-Bold"))
-        pdfmetrics.registerFont(TTFont('DejaVu-Italics', self.fontPathBase % "DejaVuSerif-Italic"))
+        self.fontPathBase = Path.cwd() / "fonts"
+        print("with pathlib: ",self.fontPathBase)
+
+        pdfmetrics.registerFont(TTFont('DejaVu', self.fontPathBase / "DejaVuSerif.ttf"))
+        pdfmetrics.registerFont(TTFont('DejaVu-Bold', self.fontPathBase / "DejaVuSerif-Bold.ttf"))
+        pdfmetrics.registerFont(TTFont('DejaVu-Italics', self.fontPathBase / "DejaVuSerif-Italic.ttf"))
 
         self.tutor = "Hannes Buchholzer"
         self.options = receiptData[0]

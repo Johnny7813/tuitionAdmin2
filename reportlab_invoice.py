@@ -5,6 +5,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import pink, black, red, blue, green
+from pathlib import Path
 
 
 class InvoiceDocument:
@@ -30,11 +31,13 @@ class InvoiceDocument:
         self.canvas.setTitle("Invoice for Maths tuition")
         self.title = "Invoice for Maths tuition"
 
-        self.fontPathBase = "./fonts/%s.ttf"
-        #print("Font: ", self.fontPathBase % "DejaVuSerif")
-        pdfmetrics.registerFont(TTFont('DejaVu', self.fontPathBase % "DejaVuSerif"))
-        pdfmetrics.registerFont(TTFont('DejaVu-Bold', self.fontPathBase % "DejaVuSerif-Bold"))
-        pdfmetrics.registerFont(TTFont('DejaVu-Italics', self.fontPathBase % "DejaVuSerif-Italic"))
+
+        self.fontPathBase = Path.cwd() / "fonts"
+        print("with pathlib: ", self.fontPathBase)
+
+        pdfmetrics.registerFont(TTFont('DejaVu', self.fontPathBase / "DejaVuSerif.ttf"))
+        pdfmetrics.registerFont(TTFont('DejaVu-Bold', self.fontPathBase / "DejaVuSerif-Bold.ttf"))
+        pdfmetrics.registerFont(TTFont('DejaVu-Italics', self.fontPathBase / "DejaVuSerif-Italic.ttf"))
 
         self.tutorData = ["Hannes Buchholzer", "3 April Close, Horsham, RH12 2LL",
                           "07516-100218", "Hannes.Buchholzer@zohomail.eu"]
