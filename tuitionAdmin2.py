@@ -173,14 +173,14 @@ class MainWindow(QtWidgets.QMainWindow, ui_tuitionAdmin2.Ui_MainWindow):
         mileage_proxy  = QtCore.QSortFilterProxyModel(self)
         mileage_proxy.setSourceModel(self.model.mileage)
         self.mileage_view.setModel(mileage_proxy)
-        self.mileage_view.sortByColumn (0, QtCore.Qt.AscendingOrder )
+        self.mileage_view.sortByColumn (0, QtCore.Qt.DescendingOrder )
         self.mileage_view.setSortingEnabled(True)
         self.mileage_view.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.mileage_view.setItemDelegateForColumn(1, dateDel)
         self.mileage_view.setItemDelegate(mileageDel)
         self.mileage_view.resizeColumnsToContents()
         self.mileage_view.horizontalHeader().setFixedHeight(60)
-        self.mileage_view.scrollToBottom()
+        self.mileage_view.scrollToTop()
         
         
         # setup TableView for tuition_records table
@@ -188,13 +188,12 @@ class MainWindow(QtWidgets.QMainWindow, ui_tuitionAdmin2.Ui_MainWindow):
         tuition_proxy.setSourceModel(self.model.tuition)
         self.tuition_view.setModel(tuition_proxy)
         self.tuition_view.resizeColumnsToContents()
-        self.tuition_view.sortByColumn (4, QtCore.Qt.AscendingOrder )
         self.tuition_view.setSortingEnabled(True)
-        self.tuition_view.sortByColumn (3, QtCore.Qt.AscendingOrder )
+        self.tuition_view.sortByColumn (3, QtCore.Qt.DescendingOrder )
         self.tuition_view.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.tuition_view.setItemDelegate(tuitionDel)
         self.tuition_view.horizontalHeader().setFixedHeight(60)
-        self.tuition_view.scrollToBottom()
+        self.tuition_view.scrollToTop()
         
         
         # setup TableView for invoice_records table
@@ -207,11 +206,11 @@ class MainWindow(QtWidgets.QMainWindow, ui_tuitionAdmin2.Ui_MainWindow):
         self.invoice_view.setItemDelegateForColumn(3, yesnoTrigDel)
         self.invoice_view.setItemDelegateForColumn(4, dateDel)
         self.invoice_view.setItemDelegateForColumn(5, dateTrigDel)
-        self.invoice_view.sortByColumn (0, QtCore.Qt.AscendingOrder )
+        self.invoice_view.sortByColumn (0, QtCore.Qt.DescendingOrder )
         self.invoice_view.setSortingEnabled(True)
         self.invoice_view.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.invoice_view.horizontalHeader().setFixedHeight(60)
-        self.invoice_view.scrollToBottom()
+        self.invoice_view.scrollToTop()
         
         
         # setup TableView for time_recording table
@@ -226,7 +225,7 @@ class MainWindow(QtWidgets.QMainWindow, ui_tuitionAdmin2.Ui_MainWindow):
         #self.time_view.setSortingEnabled(True)
         self.time_view.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.time_view.horizontalHeader().setFixedHeight(60)
-        self.time_view.scrollToBottom()
+        self.time_view.scrollToTop()
         
         # setup TableView for reminder_records
         reminder_proxy  =  QtCore.QSortFilterProxyModel(self)
