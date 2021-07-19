@@ -7,7 +7,7 @@ class settings(object):
     dev_version     = True
     invoice_dir     = 'C:/Users/Hannes/Dropbox/Private Tuition/Admin/invoices'
     receipt_dir     = 'C:/Users/Hannes/Dropbox/Private Tuition/Admin/receipts'
-    database        = "private_tuition_d3"
+    database        = "private_tuition_v3"
     #sqlite_db       = "/home/hannes/Database/SQLite/private_tuition_d3.sqlite"
     receipts_left   = 0
     

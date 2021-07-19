@@ -54,13 +54,18 @@ class PasswordDialog(QtWidgets.QDialog):
 
     # return password
     def password(self):
-        return self.lineEdit.text()
+        text = self.lineEdit.text()
+        print(text)
+        return text
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    dialog = PasswordDialog(account="Hannes.Buchholzer@zohomail.eu")
+    desktop = app.desktop()
+    dialog = PasswordDialog(parent=desktop, account="Hannes.Buchholzer@zohomail.eu")
 
     dialog.show()
     sys.exit(app.exec_())
+
+
 

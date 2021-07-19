@@ -192,7 +192,7 @@ class InvoiceDocument:
         dataHead = [["date", "tuition reference", "description", "hours", "rate", "amount"]]
         dataFoot = [["total",self.cM2S(self.invoiceHeader[-1])]]
 
-        colWiMMB  = [25, 48, 42, 16, 18, 20]
+        colWiMMB  = [25, 42, 48, 16, 18, 20]
         colWiMMF  = [sum(colWiMMB[0:-1]),colWiMMB[-1]]
         colWidthB = self.trans(colWiMMB)
         colWidthF = self.trans(colWiMMF)
@@ -258,6 +258,7 @@ class InvoiceDocument:
         self.draw_invoice_date(20, 50)
         self.draw_invoice_data(90)
         height1 = self.draw_table(110)
+        #height1 = 100
 
         yfoot = 120 + height1 + 20
         if yfoot <= 250.0:
@@ -276,7 +277,7 @@ class InvoiceDocument:
 
 if __name__ == "__main__":
     invoiceData = [['31/05/2020', 'Timothy Russell', 'Fraser Russell', 'invb-0819', 2, 180.0],
-        ['03/07/2019', 'FRussell_037', 1.5, 32.0, 48.0, 'travel', 3.0, 'discount', -6.0],
+        ['03/07/2019', 'FRussell_037', 1.5, 32.0, 48.0, 'Miro online whiteboard', 2.0, 'discount', -6.0],
         ['10/07/2019', 'FRussell_038', 1.5, 32.0, 48.0, 'travel', 3.0, 'discount', -6.0],
         ['17/07/2019', 'FRussell_039', 1.5, 32.0, 48.0, 'travel', 3.0, 'discount', -6.0],
         ['24/07/2019', 'FRussell_040', 1.5, 32.0, 48.0, 'travel', 3.0, 'discount', -6.0],
