@@ -3,7 +3,7 @@
 from PyQt5 import QtCore, QtGui, QtSql, QtWidgets
 from PyQt5.QtCore   import QObject, pyqtSignal, pyqtSlot
 from HSqlTableModel import *
-from settings       import *
+from settings import settings
 import re
 import sys
 
@@ -29,16 +29,17 @@ except AttributeError:
 class HModel(object): 
     def __init__(self,  statusBar):
 
-        self.db = QtSql.QSqlDatabase.addDatabase("QODBC3");
-        self.db.setDatabaseName("private_tuition_v3")
+        import secrets
+        self.db = QtSql.QSqlDatabase.addDatabase("QODBC3")
+        self.db.setDatabaseName(settings.database)
         self.db.setHostName("localhost")
-        self.db.setPort(3306)
+        self.db.setPort(secrets.mariadb_port)
         self.db.setUserName("root")
-        self.db.setPassword("test")
+        self.db.setPassword(secrets.mariadb_password)
 
 
         if not self.db.open():
-            print("Hannes an error happened!")
+            print("Hannes an error happened! Could not open database!")
             QtWidgets.QMessageBox.warning(None, "Database log",
                            "Database Error: {0}".format(self.db.lastError().text()))
             sys.exit(1)
@@ -69,12 +70,12 @@ class HModel(object):
             
             # make a list of active students
             if (is_active == "yes"):
-                self.fnames.append(stdmod.data3(i,"first_name"))
-                self.lnames.append(stdmod.data3(i,"last_name"))
+                self.fnames.append(stdmod.data3(i, "first_name"))
+                self.lnames.append(stdmod.data3(i, "last_name"))
                 self.imap.append(i)
-                self.active_student_ids.append(stdmod.data3(i,"student_id"))
-            else :
-                self.inactive_student_ids.append(stdmod.data3(i,"student_id"))
+                self.active_student_ids.append(stdmod.data3(i, "student_id"))
+            else:
+                self.inactive_student_ids.append(stdmod.data3(i, "student_id"))
         
         print("fnames:", self.fnames)
         print("lnames:", self.lnames)
